@@ -1,0 +1,26 @@
+name: FloorSync 3D
+slug: floorsync_3d
+version: "1.0.0"
+description: FloorSync 3D Control Panel
+
+arch:
+  - amd64
+  - armv7
+  - armhf
+  - aarch64
+
+startup: application
+boot: auto
+
+ingress: true
+ingress_port: 1338
+panel_icon: mdi:cube-outline
+panel_title: FloorSync 3D
+
+host_network: false
+init: false
+
+options: {}
+schema: {}
+
+ports: {}
