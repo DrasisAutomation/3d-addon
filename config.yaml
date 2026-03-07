@@ -1,7 +1,7 @@
-name: FloorSync 3D
-slug: floorsync_3d
+name: Domotics 3D
+slug: domotics_3d
 version: "1.0.0"
-description: FloorSync 3D Control Panel
+description: Domotics 3D Control Panel
 
 arch:
   - amd64
@@ -15,7 +15,7 @@ boot: auto
 ingress: true
 ingress_port: 1338
 panel_icon: mdi:cube-outline
-panel_title: FloorSync 3D
+panel_title: Domotics 3D
 
 host_network: false
 init: false

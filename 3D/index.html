@@ -59,7 +59,10 @@
     <!-- Scenes will be added here -->
   </ul>
 </div>
-
+<!-- Mode Selector Button - Bottom Left -->
+<button class="mode-selector-btn" id="modeSelectorBtn" title="Switch Network Mode">
+  <i class="fa-solid fa-repeat"></i>
+</button>
 <!-- Scene selection popup -->
 <div class="scene-selection-popup" id="sceneSelectionPopup">
   <button class="scene-selection-close" id="sceneSelectionClose">✕</button>
@@ -126,6 +129,7 @@
 <script src="media-remote.js"></script>
 <script src="lock.js"></script>
 <script src="sensor.js"></script>
+<script src="config.js"></script>
 <script>
 /* ================== SCENE DATA ================== */
 
@@ -1604,7 +1608,122 @@ function animate() {
   
   renderer.render(scene, camera);
 }
+/* ================== MODE SELECTOR ================== */
 
+// Function to open mode selector
+function openModeSelector() {
+  // Save current state before leaving
+  try {
+    // Save current design if needed
+    const designData = {
+      scenes: SCENES,
+      remotes: RemoteModule.getRemotesData(),
+      mediaRemotes: MediaRemoteModule.getRemotesData(),
+      lockRemotes: LockModule.getRemotesData(),
+      sensors: SensorModule.getSensorsData(),
+      currentScene: currentScene
+    };
+    
+    // Store in sessionStorage for potential recovery
+    sessionStorage.setItem('lastDesign', JSON.stringify(designData));
+  } catch (e) {
+    console.warn('Could not save design state:', e);
+  }
+  
+  // Store current connection mode in localStorage to remember choice
+  const currentMode = localStorage.getItem('lastConnectionMode') || 'remote';
+  sessionStorage.setItem('returningFromEditor', 'true');
+  
+  // Redirect to mode selector
+  window.location.href = 'mode-selector.html';
+}
+
+// Add event listener for mode selector button
+document.getElementById('modeSelectorBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  openModeSelector();
+});
+
+document.getElementById('modeSelectorBtn').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  openModeSelector();
+});
+
+// Check if we're returning from mode selector with new config
+function checkForNewConnection() {
+  const returning = sessionStorage.getItem('returningFromEditor');
+  const newConfig = sessionStorage.getItem('connectionConfig');
+  
+  if (returning === 'true' && newConfig) {
+    console.log('Returning from mode selector with new config');
+    
+    try {
+      const config = JSON.parse(newConfig);
+      console.log('New connection config:', config);
+      
+      // Update HomeAssistantConfig with new values based on mode
+      if (window.HomeAssistantConfig) {
+        if (config.mode === 'remote') {
+          // Switch to remote mode using the config method
+          window.HomeAssistantConfig.switchToRemote();
+          console.log('Switched to remote mode with URL:', window.HomeAssistantConfig.active.url);
+        } else if (config.mode === 'local') {
+          // Switch to local mode using the config method
+          window.HomeAssistantConfig.switchToLocal();
+          console.log('Switched to local mode with URL:', window.HomeAssistantConfig.active.url);
+        }
+        
+        // Force update the HA_CONFIG in all modules
+        // The modules read from window.HomeAssistantConfig dynamically via getters
+        // but we need to force a reconnection
+        
+        // Show a message that we're reconnecting
+        const statusIndicator = document.getElementById('haStatusIndicator');
+        if (statusIndicator) {
+          statusIndicator.innerHTML = '<i class="fas fa-home"></i><span>HA: Reconnecting...</span>';
+          statusIndicator.classList.remove('disconnected');
+          statusIndicator.classList.add('show');
+        }
+        
+        // Disconnect existing connections
+        RemoteModule.disconnectHomeAssistant();
+        MediaRemoteModule.disconnectHomeAssistant();
+        LockModule.disconnectHomeAssistant();
+        SensorModule.disconnectHomeAssistant();
+        
+        // Wait a moment then reconnect with new config
+        setTimeout(() => {
+          // Reinitialize all modules
+          Promise.all([
+            RemoteModule.initHomeAssistant(),
+            MediaRemoteModule.initHomeAssistant(),
+            LockModule.initHomeAssistant(),
+            SensorModule.initHomeAssistant()
+          ]).then(() => {
+            // Show success message
+            showNetworkSwitchMessage(config.mode);
+            
+            // Refresh all remotes to get new states
+            setTimeout(() => {
+              RemoteModule.syncWithHA();
+              SensorModule.refreshAllSensors();
+            }, 2000);
+          });
+        }, 1000);
+      }
+      
+      // Clear the flags
+      sessionStorage.removeItem('returningFromEditor');
+      sessionStorage.removeItem('connectionConfig');
+      
+    } catch (e) {
+      console.error('Error applying new connection config:', e);
+    }
+  }
+}
+
+// Check for returning from mode selector on page load
+checkForNewConnection();
 /* ================== INIT ================== */
 
 function autoLoadData() {

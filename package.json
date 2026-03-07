@@ -1,7 +1,7 @@
 {
-  "name": "floorsync-3d-addon",
+  "name": "domotics-3d-addon",
   "version": "1.0.0",
-  "description": "FloorSync 3D Home Assistant Add-on",
+  "description": "Domotics 3D Home Assistant Add-on",
   "main": "server.js",
   "private": true,
   "license": "MIT",

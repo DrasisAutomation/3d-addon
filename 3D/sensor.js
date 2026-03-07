@@ -89,19 +89,20 @@ const SensorModule = (() => {
   let sensorsData = new Map();
   let currentScene = 'scene1';
 
-  // ========== HOME ASSISTANT CONFIGURATION ==========
-  const HA_CONFIG = {
-    url: "wss://demo.lumihomepro1.com/api/websocket",
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI0OWU5NDM5ZWRjNWM0YTM4OTgzZmE5NzIyNjU0ZjY5MiIsImlhdCI6MTc2ODI5NjI1NSwiZXhwIjoyMDgzNjU2MjU1fQ.5C9sFe538kogRIL63dlwweBJldwhmQ7eoW86GEWls8U",
-    connected: false,
-    socket: null,
-    reconnectAttempts: 0,
-    maxReconnectAttempts: 5,
-    messageId: 1,
-    pendingRequests: new Map(),
-    autoReconnect: true,
-    reconnectInterval: 5000
-  };
+// ========== HOME ASSISTANT CONFIGURATION ==========
+const HA_CONFIG = {
+  get url() { return window.HomeAssistantConfig?.getWebSocketUrl() || ''; },
+  get token() { return window.HomeAssistantConfig?.active?.token || ''; },
+  connected: false,
+  socket: null,
+  reconnectAttempts: 0,
+  maxReconnectAttempts: window.HomeAssistantConfig?.maxReconnectAttempts || 5,
+  messageId: 1,
+  pendingRequests: new Map(),
+  autoReconnect: true,
+  reconnectInterval: window.HomeAssistantConfig?.reconnectInterval || 5000
+};
+// ==================================================
   // ==================================================
 
   // Initialize WebSocket connection to Home Assistant

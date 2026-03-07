@@ -11,13 +11,13 @@ app.use((req, res, next) => {
 });
 
 // Local UI folder
-const WEB_ROOT = path.join(__dirname, "3d-ha-optimized");
+const WEB_ROOT = path.join(__dirname, "3D");
 
 app.use(express.static(WEB_ROOT));
 
 app.get("/api/status", (req, res) => {
   res.json({
-    name: "FloorSync 3D",
+    name: "Domotics 3D",
     status: "running",
     time: new Date().toISOString()
   });
@@ -28,6 +28,6 @@ app.get("*", (req, res) => {
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log("FloorSync 3D running on port", PORT);
+  console.log("Domotics 3D running on port", PORT);
   console.log("Serving UI from:", WEB_ROOT);
 });

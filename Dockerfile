@@ -10,7 +10,7 @@ RUN npm install
 
 COPY server.js .
 COPY run.sh .
-COPY 3d-ha-optimized ./3d-ha-optimized
+COPY 3D ./3D
 
 RUN chmod +x /app/run.sh
 

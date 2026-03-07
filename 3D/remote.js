@@ -97,19 +97,27 @@ const RemoteModule = (() => {
   let activeControlIndex = -1;
 
   // ========== HOME ASSISTANT CONFIGURATION ==========
-  const HA_CONFIG = {
-    url: "https://demo.lumihomepro1.com",
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI0OWU5NDM5ZWRjNWM0YTM4OTgzZmE5NzIyNjU0ZjY5MiIsImlhdCI6MTc2ODI5NjI1NSwiZXhwIjoyMDgzNjU2MjU1fQ.5C9sFe538kogRIL63dlwweBJldwhmQ7eoW86GEWls8U",
-    connected: false,
-    socket: null,
-    reconnectAttempts: 0,
-    maxReconnectAttempts: 5,
-    messageId: 1,
-    pendingRequests: new Map(),
-    autoReconnect: true,
-    reconnectInterval: 5000,
-    entityStates: new Map()   // entity_id -> {state, attributes}
-  };
+// ========== HOME ASSISTANT CONFIGURATION ==========
+const HA_CONFIG = {
+  get url() { 
+    // Always get the latest URL from HomeAssistantConfig
+    return window.HomeAssistantConfig?.getWebSocketUrl() || ''; 
+  },
+  get token() { 
+    // Always get the latest token from HomeAssistantConfig
+    return window.HomeAssistantConfig?.active?.token || ''; 
+  },
+  connected: false,
+  socket: null,
+  reconnectAttempts: 0,
+  maxReconnectAttempts: window.HomeAssistantConfig?.maxReconnectAttempts || 5,
+  messageId: 1,
+  pendingRequests: new Map(),
+  autoReconnect: true,
+  reconnectInterval: window.HomeAssistantConfig?.reconnectInterval || 5000,
+  entityStates: new Map()   // entity_id -> {state, attributes}
+};
+// ==================================================
   // ==================================================
 
   // Convert HTTP URL to WebSocket URL
@@ -560,7 +568,7 @@ const RemoteModule = (() => {
 
   // Setup event listeners for a switch - FIXED for mobile
   const setupSwitchEventListeners = (switchBtn, index, switchesData, remoteId) => {
-    const LONG_PRESS_DURATION = 500; // 500ms for long press
+    const LONG_PRESS_DURATION = 25000; // 500ms for long press
     let pressTimer = null;
     let isLongPress = false;
     let touchStartTime = 0;
@@ -1356,7 +1364,15 @@ const setupEventListeners = (id, modal, panelSwitch, panelEdit, panelControl,
         }
       });
     },
-
+// Add this to the public API if it's missing
+disconnectHomeAssistant: () => {
+  if (HA_CONFIG.socket) {
+    HA_CONFIG.autoReconnect = false;
+    HA_CONFIG.socket.close();
+    HA_CONFIG.connected = false;
+    console.log('Home Assistant WebSocket disconnected');
+  }
+},
     // Update remote visibility based on current scene
     updateRemoteVisibility: (sceneName) => {
       currentScene = sceneName;
