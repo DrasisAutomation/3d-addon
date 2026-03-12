@@ -3,20 +3,20 @@
 const HomeAssistantConfig = {
   // Remote connection (cloud)
   remote: {
-    url: "wss://demo.lumihomepro1.com/api/websocket",
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI0OWU5NDM5ZWRjNWM0YTM4OTgzZmE5NzIyNjU0ZjY5MiIsImlhdCI6MTc2ODI5NjI1NSwiZXhwIjoyMDgzNjU2MjU1fQ.5C9sFe538kogRIL63dlwweBJldwhmQ7eoW86GEWls8U"
+    url: "wss://URL_HOME ASSISTANT/api/websocket",
+    token: "LONG LIVE TOKEN"
   },
   
   // Local connection - UPDATE THESE VALUES WITH YOUR LOCAL HA DETAILS
   local: {
-    url: "ws://192.168.2.25:8123/api/websocket",
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI0OWU5NDM5ZWRjNWM0YTM4OTgzZmE5NzIyNjU0ZjY5MiIsImlhdCI6MTc2ODI5NjI1NSwiZXhwIjoyMDgzNjU2MjU1fQ.5C9sFe538kogRIL63dlwweBJldwhmQ7eoW86GEWls8U"  // Replace with your local token
+    url: "ws://IP_HOME ASSISTANT/api/websocket",
+    token: "LONG LIVE TOKEN"
   },
   
   // Current active connection (will be set by mode selector)
   active: {
-    url: "wss://demo.lumihomepro1.com/api/websocket",
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI0OWU5NDM5ZWRjNWM0YTM4OTgzZmE5NzIyNjU0ZjY5MiIsImlhdCI6MTc2ODI5NjI1NSwiZXhwIjoyMDgzNjU2MjU1fQ.5C9sFe538kogRIL63dlwweBJldwhmQ7eoW86GEWls8U"
+    url: "wss://URL_HOME ASSISTANT/api/websocket",
+    token: "LONG LIVE TOKEN"
   },
   
   // Connection settings
