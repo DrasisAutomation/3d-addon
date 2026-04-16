@@ -1,6 +1,7 @@
-ARG BUILD_FROM
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.19
 FROM $BUILD_FROM
 
+# Install Node.js
 RUN apk add --no-cache nodejs npm
 
 WORKDIR /app
