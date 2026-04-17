@@ -16,7 +16,7 @@ const firebaseConfig = {
   appId: "1:369998064376:web:85770ffa657fa95254690d"
 };
 
-const LICENSE_KEY = "HA-3D-2026-0003";
+const LICENSE_KEY = "HA-3D-2026-0029";
 const CACHE_KEY = 'license_cache_3d_v1'; // localStorage key
 const CACHE_EXPIRY_DAYS = 7; // How long cache is valid (7 days)
 
