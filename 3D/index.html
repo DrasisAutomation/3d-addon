@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>360 Scene Editor</title>
 <!-- Add Font Awesome for remote module -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="fontawesome/css/all.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -39,6 +39,11 @@
   Sensor Placement Mode Active - Click to place sensor
 </div>
 
+<!-- Individual Remote Mode Indicator -->
+<div class="remote-mode-indicator" id="individualRemoteModeIndicator" style="background: rgba(255, 152, 0, 0.9);">
+  Individual Remote Placement Mode Active - Click to place individual remote
+</div>
+
 <!-- Scene selection indicator -->
 <div class="scene-selection-indicator" id="sceneSelectionIndicator">
   Scene Selection Mode Active - Click on a hotspot
@@ -47,6 +52,11 @@
 <!-- Delete Mode Indicator -->
 <div class="delete-mode-indicator" id="deleteModeIndicator">
   Delete Mode Active - Click on a remote or hotspot to delete
+</div>
+
+<!-- Shape Mode Indicator -->
+<div class="remote-mode-indicator" id="shapeModeIndicator" style="background: rgba(255, 87, 34, 0.9);">
+  Shape Mode Active
 </div>
 
 <!-- Sidebar with scenes list -->
@@ -125,10 +135,12 @@
 </div>
 
 <script src="three.min.js"></script>
+<script src="icon-picker.js"></script>
 <script src="remote.js"></script>
 <script src="media-remote.js"></script>
 <script src="lock.js"></script>
 <script src="sensor.js"></script>
+<script src="individual-remote.js"></script>
 <script src="config.js"></script>
 <!-- Add this after the other script imports in index.html -->
 <script type="module" src="license-check.js"></script>
@@ -148,12 +160,14 @@ let mode = "view"; // view | add | move
 let sceneSelectionMode = false;
 let selectedHotspotForScene = null;
 let deleteMode = false;
+window.shapeMode = false;
 
 /* ================== REMOTE MODES ================== */
 let remoteMode = false; // Standard remote placement mode
 let mediaRemoteMode = false; // Media remote placement mode
 let lockMode = false; // Lock remote placement mode
 let sensorMode = false; // Sensor placement mode
+let individualRemoteMode = false; // Individual Remote placement mode
 let remoteTargetScene = null;
 
 /* ================== THREE ================== */
@@ -301,6 +315,7 @@ function loadScene(sceneKey) {
         MediaRemoteModule.setCurrentScene(sceneKey);
         LockModule.setCurrentScene(sceneKey);
         SensorModule.setCurrentScene(sceneKey);
+        IndividualRemoteModule.setCurrentScene(sceneKey);
         clearHotspots();
         createHotspots(sceneKey);
         updateRemoteVisibility();
@@ -404,13 +419,14 @@ function updateHAStatus() {
   const mediaConfig = MediaRemoteModule.getHAConfig();
   const lockConfig = LockModule.getHAConfig();
   const sensorConfig = SensorModule.getHAConfig();
+  const individualConfig = IndividualRemoteModule.getHAConfig();
   
   const statusIndicator = document.getElementById('haStatusIndicator');
   
   statusIndicator.classList.add('show');
   
   // Check if any module is connected
-  const isConnected = remoteConfig.connected || mediaConfig.connected || lockConfig.connected || sensorConfig.connected;
+  const isConnected = remoteConfig.connected || mediaConfig.connected || lockConfig.connected || sensorConfig.connected || individualConfig.connected;
   
   if (isConnected) {
     statusIndicator.classList.remove('disconnected');
@@ -426,6 +442,15 @@ function updateHAStatus() {
 function updateRemoteModeIndicator() {
   const indicator = document.getElementById('remoteModeIndicator');
   if (remoteMode) {
+    indicator.classList.add('show');
+  } else {
+    indicator.classList.remove('show');
+  }
+}
+
+function updateIndividualRemoteModeIndicator() {
+  const indicator = document.getElementById('individualRemoteModeIndicator');
+  if (individualRemoteMode) {
     indicator.classList.add('show');
   } else {
     indicator.classList.remove('show');
@@ -460,11 +485,17 @@ function updateSensorModeIndicator() {
 }
 
 function updateDeleteModeIndicator() {
-  const indicator = document.getElementById('deleteModeIndicator');
-  if (deleteMode) {
-    indicator.classList.add('show');
+  const ind = document.getElementById("deleteModeIndicator");
+  ind.style.display = deleteMode ? "block" : "none";
+}
+
+function updateShapeModeIndicator() {
+  const ind = document.getElementById("shapeModeIndicator");
+  if (window.shapeMode) {
+    ind.textContent = `Shape Mode Active (${window.shapeMode}) - Click a remote's main button to apply`;
+    ind.style.display = "block";
   } else {
-    indicator.classList.remove('show');
+    ind.style.display = "none";
   }
 }
 
@@ -478,7 +509,7 @@ function updateSceneSelectionIndicator() {
 }
 
 function handleRemotePlacement(point) {
-  if (!remoteMode && !mediaRemoteMode && !lockMode && !sensorMode) return;
+  if (!remoteMode && !mediaRemoteMode && !lockMode && !sensorMode && !individualRemoteMode) return;
   
   if (remoteMode) {
     RemoteModule.createRemote(point, remoteTargetScene || currentScene);
@@ -500,6 +531,11 @@ function handleRemotePlacement(point) {
     console.log(`Sensor placed at position: ${JSON.stringify(point.toArray())}`);
     sensorMode = false;
     updateSensorModeIndicator();
+  } else if (individualRemoteMode) {
+    IndividualRemoteModule.createRemote(point, remoteTargetScene || currentScene);
+    console.log(`Individual remote placed at position: ${JSON.stringify(point.toArray())}`);
+    individualRemoteMode = false;
+    updateIndividualRemoteModeIndicator();
   }
 }
 
@@ -510,6 +546,7 @@ function saveDesignWithRemotes() {
     mediaRemotes: MediaRemoteModule.getRemotesData(),
     lockRemotes: LockModule.getRemotesData(),
     sensors: SensorModule.getSensorsData(),
+    individualRemotes: IndividualRemoteModule.getRemotesData(),
     currentScene: currentScene,
     haConfig: RemoteModule.getHAConfig()
   };
@@ -578,6 +615,10 @@ function loadDesignWithRemotes() {
         SensorModule.loadSensors(loadedData.sensors);
       }
       
+      if (loadedData.individualRemotes && Array.isArray(loadedData.individualRemotes)) {
+        IndividualRemoteModule.loadRemotes(loadedData.individualRemotes);
+      }
+      
       closeLoadDesignModal();
       updateRemoteVisibility();
       updateHAStatus();
@@ -594,6 +635,7 @@ function updateRemoteVisibility() {
   MediaRemoteModule.updateRemoteVisibility(currentScene);
   LockModule.updateRemoteVisibility(currentScene);
   SensorModule.updateSensorVisibility(currentScene);
+  IndividualRemoteModule.updateRemoteVisibility(currentScene);
 }
 
 /* ================== SCENE SELECTION POPUP FUNCTIONS ================== */
@@ -957,9 +999,10 @@ document.addEventListener("keydown", e => {
   
   // Standard Remote placement mode (S + R)
   if (keys.has("s") && keys.has("r")) {
-    if (!remoteMode && !mediaRemoteMode && !lockMode && !sensorMode) {
+    if (!remoteMode && !mediaRemoteMode && !lockMode && !sensorMode && !individualRemoteMode) {
       remoteMode = true;
       deleteMode = false;
+      window.shapeMode = false;
       mediaRemoteMode = false;
       lockMode = false;
       sensorMode = false;
@@ -968,7 +1011,9 @@ document.addEventListener("keydown", e => {
       updateMediaRemoteModeIndicator();
       updateLockModeIndicator();
       updateSensorModeIndicator();
+      updateIndividualRemoteModeIndicator();
       updateDeleteModeIndicator();
+      updateShapeModeIndicator();
       console.log("Standard remote placement mode ACTIVATED for scene: " + SCENES[currentScene].name);
     }
     mode = "view";
@@ -979,17 +1024,19 @@ document.addEventListener("keydown", e => {
   // Media Remote placement mode (M + R + B)
   if (keys.has("m") && keys.has("r") && keys.has("b")) {
     e.preventDefault();
-    if (!mediaRemoteMode && !remoteMode && !lockMode && !sensorMode) {
+    if (!mediaRemoteMode && !remoteMode && !lockMode && !sensorMode && !individualRemoteMode) {
       mediaRemoteMode = true;
       deleteMode = false;
       remoteMode = false;
       lockMode = false;
       sensorMode = false;
+      individualRemoteMode = false;
       remoteTargetScene = currentScene;
       updateMediaRemoteModeIndicator();
       updateRemoteModeIndicator();
       updateLockModeIndicator();
       updateSensorModeIndicator();
+      updateIndividualRemoteModeIndicator();
       updateDeleteModeIndicator();
       console.log("Media remote placement mode ACTIVATED for scene: " + SCENES[currentScene].name);
     }
@@ -1001,17 +1048,19 @@ document.addEventListener("keydown", e => {
   // Lock Remote placement mode (L + O + C)
   if (keys.has("l") && keys.has("o") && keys.has("c")) {
     e.preventDefault();
-    if (!lockMode && !remoteMode && !mediaRemoteMode && !sensorMode) {
+    if (!lockMode && !remoteMode && !mediaRemoteMode && !sensorMode && !individualRemoteMode) {
       lockMode = true;
       deleteMode = false;
       remoteMode = false;
       mediaRemoteMode = false;
       sensorMode = false;
+      individualRemoteMode = false;
       remoteTargetScene = currentScene;
       updateLockModeIndicator();
       updateRemoteModeIndicator();
       updateMediaRemoteModeIndicator();
       updateSensorModeIndicator();
+      updateIndividualRemoteModeIndicator();
       updateDeleteModeIndicator();
       console.log("Lock remote placement mode ACTIVATED for scene: " + SCENES[currentScene].name);
     }
@@ -1023,19 +1072,45 @@ document.addEventListener("keydown", e => {
   // Sensor placement mode (S + E + N)
   if (keys.has("s") && keys.has("e") && keys.has("n")) {
     e.preventDefault();
-    if (!sensorMode && !remoteMode && !mediaRemoteMode && !lockMode) {
+    if (!sensorMode && !remoteMode && !mediaRemoteMode && !lockMode && !individualRemoteMode) {
       sensorMode = true;
       deleteMode = false;
       remoteMode = false;
       mediaRemoteMode = false;
       lockMode = false;
+      individualRemoteMode = false;
       remoteTargetScene = currentScene;
       updateSensorModeIndicator();
       updateRemoteModeIndicator();
       updateMediaRemoteModeIndicator();
       updateLockModeIndicator();
+      updateIndividualRemoteModeIndicator();
       updateDeleteModeIndicator();
       console.log("Sensor placement mode ACTIVATED for scene: " + SCENES[currentScene].name);
+    }
+    mode = "view";
+    sceneSelectionMode = false;
+    updateSceneSelectionIndicator();
+  }
+  
+  // Individual Remote placement mode (R + O)
+  if (keys.has("r") && keys.has("o") && !keys.has("c")) { // ensure L+O+C doesn't trigger R+O wrongly
+    e.preventDefault();
+    if (!individualRemoteMode && !remoteMode && !mediaRemoteMode && !lockMode && !sensorMode) {
+      individualRemoteMode = true;
+      deleteMode = false;
+      remoteMode = false;
+      mediaRemoteMode = false;
+      lockMode = false;
+      sensorMode = false;
+      remoteTargetScene = currentScene;
+      updateIndividualRemoteModeIndicator();
+      updateRemoteModeIndicator();
+      updateMediaRemoteModeIndicator();
+      updateLockModeIndicator();
+      updateSensorModeIndicator();
+      updateDeleteModeIndicator();
+      console.log("Individual remote placement mode ACTIVATED for scene: " + SCENES[currentScene].name);
     }
     mode = "view";
     sceneSelectionMode = false;
@@ -1064,6 +1139,11 @@ document.addEventListener("keydown", e => {
       updateSensorModeIndicator();
       console.log("Sensor placement mode DEACTIVATED.");
     }
+    if (individualRemoteMode) {
+      individualRemoteMode = false;
+      updateIndividualRemoteModeIndicator();
+      console.log("Individual remote placement mode DEACTIVATED.");
+    }
     if (sceneSelectionMode) {
       sceneSelectionMode = false;
       updateSceneSelectionIndicator();
@@ -1074,12 +1154,51 @@ document.addEventListener("keydown", e => {
       updateDeleteModeIndicator();
       console.log("Delete mode DEACTIVATED.");
     }
+    if (window.shapeMode) {
+      window.shapeMode = false;
+      updateShapeModeIndicator();
+      console.log("Shape mode DEACTIVATED.");
+    }
     mode = "view";
+  }
+  
+  // Shape mode: Round (R + N + D)
+  if (keys.has("r") && keys.has("n") && keys.has("d")) {
+    if (window.shapeMode !== 'round') {
+      window.shapeMode = 'round';
+      deleteMode = false;
+      remoteMode = mediaRemoteMode = lockMode = sensorMode = individualRemoteMode = sceneSelectionMode = false;
+      updateShapeModeIndicator();
+      updateRemoteModeIndicator();
+      updateMediaRemoteModeIndicator();
+      updateLockModeIndicator();
+      updateSensorModeIndicator();
+      updateIndividualRemoteModeIndicator();
+      updateDeleteModeIndicator();
+      updateSceneSelectionIndicator();
+    }
+  }
+
+  // Shape mode: Default (S + Q)
+  if (keys.has("s") && keys.has("q")) {
+    if (window.shapeMode !== 'default') {
+      window.shapeMode = 'default';
+      deleteMode = false;
+      remoteMode = mediaRemoteMode = lockMode = sensorMode = individualRemoteMode = sceneSelectionMode = false;
+      updateShapeModeIndicator();
+      updateRemoteModeIndicator();
+      updateMediaRemoteModeIndicator();
+      updateLockModeIndicator();
+      updateSensorModeIndicator();
+      updateIndividualRemoteModeIndicator();
+      updateDeleteModeIndicator();
+      updateSceneSelectionIndicator();
+    }
   }
   
   // Scene selection mode (N + E)
   if (keys.has("n") && keys.has("e")) {
-    if (!sceneSelectionMode && !remoteMode && !mediaRemoteMode && !lockMode && !deleteMode && !sensorMode) {
+    if (!sceneSelectionMode && !remoteMode && !mediaRemoteMode && !lockMode && !deleteMode && !sensorMode && !individualRemoteMode) {
       sceneSelectionMode = true;
       mode = "view";
       updateSceneSelectionIndicator();
@@ -1095,6 +1214,7 @@ document.addEventListener("keydown", e => {
     mediaRemoteMode = false;
     lockMode = false;
     sensorMode = false;
+    individualRemoteMode = false;
     sceneSelectionMode = false;
     mode = "view";
     updateDeleteModeIndicator();
@@ -1102,6 +1222,7 @@ document.addEventListener("keydown", e => {
     updateMediaRemoteModeIndicator();
     updateLockModeIndicator();
     updateSensorModeIndicator();
+    updateIndividualRemoteModeIndicator();
     updateSceneSelectionIndicator();
     console.log("Delete mode ACTIVATED. Click on a remote or hotspot to delete it.");
   }
@@ -1453,7 +1574,7 @@ function handlePointerStart(e) {
     }
   }
 
-  if (remoteMode || mediaRemoteMode || lockMode || sensorMode) {
+  if (remoteMode || mediaRemoteMode || lockMode || sensorMode || individualRemoteMode) {
     const hit = raycaster.intersectObject(activeSphere);
     if (hit.length) {
       handleRemotePlacement(hit[0].point);
@@ -1607,6 +1728,7 @@ function animate() {
   MediaRemoteModule.updateRemotePositions(camera);
   LockModule.updateRemotePositions(camera);
   SensorModule.updateSensorPositions(camera);
+  IndividualRemoteModule.updateRemotePositions(camera);
   
   renderer.render(scene, camera);
 }
@@ -1623,6 +1745,7 @@ function openModeSelector() {
       mediaRemotes: MediaRemoteModule.getRemotesData(),
       lockRemotes: LockModule.getRemotesData(),
       sensors: SensorModule.getSensorsData(),
+      individualRemotes: IndividualRemoteModule.getRemotesData(),
       currentScene: currentScene
     };
     
@@ -1692,6 +1815,7 @@ function checkForNewConnection() {
         MediaRemoteModule.disconnectHomeAssistant();
         LockModule.disconnectHomeAssistant();
         SensorModule.disconnectHomeAssistant();
+        IndividualRemoteModule.disconnectHomeAssistant();
         
         // Wait a moment then reconnect with new config
         setTimeout(() => {
@@ -1700,7 +1824,8 @@ function checkForNewConnection() {
             RemoteModule.initHomeAssistant(),
             MediaRemoteModule.initHomeAssistant(),
             LockModule.initHomeAssistant(),
-            SensorModule.initHomeAssistant()
+            SensorModule.initHomeAssistant(),
+            IndividualRemoteModule.initHomeAssistant()
           ]).then(() => {
             // Show success message
             showNetworkSwitchMessage(config.mode);
@@ -1772,6 +1897,10 @@ function autoLoadData() {
             SensorModule.loadSensors(loadedData.sensors);
           }
           
+          if (loadedData.individualRemotes && Array.isArray(loadedData.individualRemotes)) {
+            IndividualRemoteModule.loadRemotes(loadedData.individualRemotes);
+          }
+          
           preloadAllScenes();
           loadInitialScene();
         }
@@ -1821,6 +1950,7 @@ function loadDefault360View() {
   MediaRemoteModule.setCurrentScene('default');
   LockModule.setCurrentScene('default');
   SensorModule.setCurrentScene('default');
+  IndividualRemoteModule.setCurrentScene('default');
   updateScenesList();
   animate();
   
@@ -1943,6 +2073,7 @@ function loadInitialScene() {
   MediaRemoteModule.setCurrentScene(currentScene);
   LockModule.setCurrentScene(currentScene);
   SensorModule.setCurrentScene(currentScene);
+  IndividualRemoteModule.setCurrentScene(currentScene);
   updateScenesList();
   animate();
 }
@@ -1951,15 +2082,18 @@ function loadInitialScene() {
   console.log('Auto-connecting to Home Assistant...');
   updateHAStatus();
   
-  // Initialize all modules
-  const remoteResult = await RemoteModule.initHomeAssistant();
-  const mediaResult = await MediaRemoteModule.initHomeAssistant();
-  const lockResult = await LockModule.initHomeAssistant();
-  const sensorResult = await SensorModule.initHomeAssistant();
+  // Initialize all modules concurrently to prevent sequential bottleneck delay
+  const results = await Promise.all([
+    RemoteModule.initHomeAssistant(),
+    MediaRemoteModule.initHomeAssistant(),
+    LockModule.initHomeAssistant(),
+    SensorModule.initHomeAssistant(),
+    IndividualRemoteModule.initHomeAssistant()
+  ]);
   
   updateHAStatus();
   
-  if (remoteResult.success || mediaResult.success || lockResult.success || sensorResult.success) {
+  if (results.some(res => res.success)) {
     console.log('Home Assistant connected successfully');
   } else {
     console.warn('Home Assistant connection failed');
@@ -1989,7 +2123,10 @@ document.addEventListener('click', (e) => {
       !e.target.closest('.lock-remote-close-btn') &&
       !e.target.closest('.sensor-modal-content') && 
       !e.target.closest('.sensor-main-button') &&
-      !e.target.closest('.sensor-close-btn')) {
+      !e.target.closest('.sensor-close-btn') &&
+      !e.target.closest('.individual-remote-modal-content') &&
+      !e.target.closest('.individual-remote-main-button') &&
+      !e.target.closest('.individual-remote-close-btn')) {
     document.querySelectorAll('.remote-main-button').forEach(btn => {
       btn.classList.remove('active-main');
     });
@@ -2000,6 +2137,9 @@ document.addEventListener('click', (e) => {
       btn.classList.remove('active-main');
     });
     document.querySelectorAll('.sensor-main-button').forEach(btn => {
+      btn.classList.remove('active-main');
+    });
+    document.querySelectorAll('.individual-remote-main-button').forEach(btn => {
       btn.classList.remove('active-main');
     });
   }
@@ -2017,7 +2157,10 @@ document.addEventListener('touchend', (e) => {
       !e.target.closest('.lock-remote-close-btn') &&
       !e.target.closest('.sensor-modal-content') && 
       !e.target.closest('.sensor-main-button') &&
-      !e.target.closest('.sensor-close-btn')) {
+      !e.target.closest('.sensor-close-btn') &&
+      !e.target.closest('.individual-remote-modal-content') &&
+      !e.target.closest('.individual-remote-main-button') &&
+      !e.target.closest('.individual-remote-close-btn')) {
     document.querySelectorAll('.remote-main-button').forEach(btn => {
       btn.classList.remove('active-main');
     });
@@ -2028,6 +2171,9 @@ document.addEventListener('touchend', (e) => {
       btn.classList.remove('active-main');
     });
     document.querySelectorAll('.sensor-main-button').forEach(btn => {
+      btn.classList.remove('active-main');
+    });
+    document.querySelectorAll('.individual-remote-main-button').forEach(btn => {
       btn.classList.remove('active-main');
     });
   }
@@ -2046,9 +2192,13 @@ setInterval(() => {
   const mediaConfig = MediaRemoteModule.getHAConfig();
   const lockConfig = LockModule.getHAConfig();
   const sensorConfig = SensorModule.getHAConfig();
+  const individualConfig = IndividualRemoteModule.getHAConfig();
   
   if (remoteConfig.connected) {
     RemoteModule.syncWithHA();
+  }
+  if (individualConfig.connected) {
+    IndividualRemoteModule.syncWithHA();
   }
   if (mediaConfig.connected) {
     // Media remote sync if needed

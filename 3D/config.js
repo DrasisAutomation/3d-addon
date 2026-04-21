@@ -3,20 +3,20 @@
 const HomeAssistantConfig = {
   // Remote connection (cloud)
   remote: {
-    url: "wss://LUMI REMOTE URL/api/websocket",
-    token: "LONG LIVE TOKEN"
+    url: "wss://REMOTE URL/api/websocket",
+    token: "REMOTE TOKEN"
   },
   
   // Local connection - UPDATE THESE VALUES WITH YOUR LOCAL HA DETAILS
   local: {
-    url: "ws://LOCAL IP:8123/api/websocket",
-    token: "LONG LIVE TOKEN"
+    url: "ws://[IP_ADDRESS]/api/websocket",
+    token: "REMOTE TOKEN"
   },
   
   // Current active connection (will be set by mode selector)
   active: {
-    url: "wss://LUMI REMOTE URL/api/websocket",
-    token: "LONG LIVE TOKEN"
+    url: "wss://REMOTE URL/api/websocket",
+    token: "REMOTE TOKEN"
   },
   
   // Connection settings

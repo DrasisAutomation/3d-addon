@@ -148,7 +148,7 @@ body {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 200;
+  z-index: 9999;
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -416,7 +416,7 @@ body {
   background: rgba(0, 0, 0, 0.95);
   border-radius: 12px;
   padding: 16px;
-  z-index: 1000;
+  z-index: 9999;
   display: none;
   flex-direction: column;
   gap: 8px;
@@ -615,6 +615,17 @@ body {
 
 .remote-main-button.active-main i {
   color: #FFC107;
+}
+
+/* Device ON theme for individual remote button */
+.remote-main-button.active-device {
+  box-shadow: 0 0 20px 10px rgba(255, 193, 7, 0.8), 
+              0 4px 8px rgba(0, 0, 0, 0.15);
+  border: 2px solid rgba(255, 193, 7, 0.5);
+}
+
+.remote-main-button.active-device i {
+  color: #FFC107 !important;
 }
 
 /* REMOTE MODAL STYLES */

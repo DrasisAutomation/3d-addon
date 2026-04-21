@@ -38,7 +38,7 @@ const MediaRemoteModule = (() => {
 
   // Default buttons for media remote - FIXED: Using separate serviceDomain and service fields
   const DEFAULT_BUTTONS = [
-    { icon: 'fas fa-power-off', text: 'Power', entityType: 'media_player', entityId: 'media_player.z9x_pro', serviceDomain: 'zidoo', service: 'send_key', key: 'Key.Power', textColor: '#000000', bgColor: '#ffffff' },
+    { icon: 'fas fa-power-off', text: 'Power', entityType: 'media_player', entityId: 'media_player.z9x_pro', serviceDomain: 'zidoo', service: 'send_key', key: 'Key.Select', textColor: '#000000', bgColor: '#ffffff' },
     { icon: 'fas fa-arrow-up', text: 'Up', entityType: 'media_player', entityId: 'media_player.z9x_pro', serviceDomain: 'zidoo', service: 'send_key', key: 'Key.Up', textColor: '#000000', bgColor: '#ffffff' },
     { icon: 'fas fa-home', text: 'Home', entityType: 'media_player', entityId: 'media_player.z9x_pro', serviceDomain: 'zidoo', service: 'send_key', key: 'Key.Home', textColor: '#000000', bgColor: '#ffffff' },
     { icon: 'fas fa-arrow-left', text: 'Left', entityType: 'media_player', entityId: 'media_player.z9x_pro', serviceDomain: 'zidoo', service: 'send_key', key: 'Key.Left', textColor: '#000000', bgColor: '#ffffff' },
@@ -58,20 +58,21 @@ const MediaRemoteModule = (() => {
   let longPressTimer = null;
   let longPressButton = null;
 
-// ========== HOME ASSISTANT CONFIGURATION ==========
-const HA_CONFIG = {
-  get url() { return window.HomeAssistantConfig?.getWebSocketUrl() || ''; },
-  get token() { return window.HomeAssistantConfig?.active?.token || ''; },
-  connected: false,
-  socket: null,
-  reconnectAttempts: 0,
-  maxReconnectAttempts: window.HomeAssistantConfig?.maxReconnectAttempts || 5,
-  messageId: 1,
-  pendingRequests: new Map(),
-  autoReconnect: true,
-  reconnectInterval: window.HomeAssistantConfig?.reconnectInterval || 5000
-};
-// ==================================================
+  // ========== HOME ASSISTANT CONFIGURATION ==========
+  const HA_CONFIG = {
+    url: "wss://demo.lumihomepro1.com/api/websocket",
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI0OWU5NDM5ZWRjNWM0YTM4OTgzZmE5NzIyNjU0ZjY5MiIsImlhdCI6MTc2ODI5NjI1NSwiZXhwIjoyMDgzNjU2MjU1fQ.5C9sFe538kogRIL63dlwweBJldwhmQ7eoW86GEWls8U",
+    connected: false,
+    socket: null,
+    reconnectAttempts: 0,
+    maxReconnectAttempts: 5,
+    messageId: 1,
+    pendingRequests: new Map(),
+    autoReconnect: true,
+    reconnectInterval: 5000
+  };
+  // ==================================================
+
   // Initialize WebSocket connection to Home Assistant
   const initWebSocket = () => {
     if (HA_CONFIG.socket && (HA_CONFIG.socket.readyState === WebSocket.OPEN || HA_CONFIG.socket.readyState === WebSocket.CONNECTING)) {
@@ -235,12 +236,17 @@ const HA_CONFIG = {
       if (deleteConfirmation) deleteConfirmation.classList.add('hidden');
     }
     
-    document.getElementById(`${remoteId}-modalTitle`).textContent = 'Remote Control';
-    document.getElementById(`${remoteId}-modalSubtitle`).textContent = 'Smart Controller';
+    const remoteData = remotesData.get(remoteId);
+    if (document.getElementById(`${remoteId}-modalTitle`)) {
+      document.getElementById(`${remoteId}-modalTitle`).textContent = remoteData ? (remoteData.panelName || 'Remote Control') : 'Remote Control';
+    }
+    if (document.getElementById(`${remoteId}-modalSubtitle`)) {
+      document.getElementById(`${remoteId}-modalSubtitle`).textContent = 'Smart Controller';
+    }
   };
 
   // Create HTML structure for media remote modal
-  const createRemoteModal = (position, targetScene, buttonsOverride = null) => {
+  const createRemoteModal = (position, targetScene, buttonsOverride = null, panelName = null, shape = null, mainIcon = null) => {
     const remoteId = `media-remote-${instanceId++}`;
 
     // Create buttons for this remote - use provided buttons or defaults
@@ -260,8 +266,8 @@ const HA_CONFIG = {
 
     container.innerHTML = `
       <!-- Main Button -->
-      <button class="media-remote-main-button" id="${remoteId}-mainButton">
-        <i class="fa-solid fa-traffic-light"></i>
+      <button class="media-remote-main-button" id="${remoteId}-mainButton" style="${shape === 'round' ? 'border-radius: 50%; aspect-ratio: 1/1;' : ''}">
+        <i class="${mainIcon || 'fa-solid fa-traffic-light'}" id="${remoteId}-mainIconEl"></i>
       </button>
 
       <!-- Main Modal -->
@@ -271,11 +277,11 @@ const HA_CONFIG = {
             <i class="fas fa-times"></i>
           </button>
           
-          <button class="media-remote-edit-btn" id="${remoteId}-editBtn">
-            <i class="fas fa-edit" style="display:none"></i>
+          <button class="media-remote-edit-btn" id="${remoteId}-editBtn" style="display: none;">
+            <i class="fas fa-edit"></i>
           </button>
 
-          <div class="media-remote-title" id="${remoteId}-modalTitle">Remote Control</div>
+          <div class="media-remote-title" id="${remoteId}-modalTitle">${panelName || 'Remote Control'}</div>
           <div class="media-remote-subtitle" id="${remoteId}-modalSubtitle">Smart Controller</div>
 
           <!-- Panel 1: Button grid -->
@@ -287,12 +293,35 @@ const HA_CONFIG = {
             </div>
           </div>
 
+          <!-- Panel 3: edit main button icon -->
+          <div id="${remoteId}-panelMainEdit" class="media-remote-panel hidden">
+            <div class="media-remote-title">Edit Main Icon</div>
+            <div class="media-remote-form-group">
+              <label class="media-remote-form-label">Search Icon</label>
+              <input type="text" class="media-remote-form-input" id="${remoteId}-mainIconSearch" placeholder="Search icons... (e.g. cat)" style="margin-bottom: 5px;">
+              <input type="hidden" id="${remoteId}-mainIconButtonValue" value="${mainIcon || 'fa-solid fa-traffic-light'}">
+              <div class="media-remote-icon-selection">
+                <div class="media-remote-icon-grid" id="${remoteId}-mainIconGrid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-height: 200px; overflow-y: auto; margin-top: 10px;"></div>
+              </div>
+            </div>
+            <div class="media-remote-actions" style="margin-top: 15px;">
+              <button class="media-remote-btn" id="${remoteId}-cancelMainEditBtn" style="background:#555">Cancel</button>
+              <button class="media-remote-btn media-remote-btn-primary" id="${remoteId}-saveMainEditBtn">Save</button>
+            </div>
+          </div>
+
           <!-- Panel 2: edit form -->
           <div id="${remoteId}-panelEdit" class="media-remote-panel hidden">
             <div class="media-remote-form" id="${remoteId}-editForm">
               <div class="media-remote-form-group">
+                <label class="media-remote-form-label">Panel Name</label>
+                <input type="text" class="media-remote-form-input" id="${remoteId}-panelNameInput" value="${panelName || 'Remote Control'}" maxlength="20">
+              </div>
+
+              <div class="media-remote-form-group">
                 <label class="media-remote-form-label">Button Icon</label>
-                <input type="text" class="media-remote-form-input" id="${remoteId}-buttonIcon" value="fas fa-plus">
+                <input type="text" class="media-remote-form-input" id="${remoteId}-iconSearch" placeholder="Search icons... (e.g. cat)" style="margin-bottom: 5px;">
+                <input type="text" class="media-remote-form-input" id="${remoteId}-buttonIcon" value="fas fa-plus" style="display: none;">
                 <div class="media-remote-icon-grid" id="${remoteId}-iconGrid"></div>
               </div>
 
@@ -425,6 +454,9 @@ const HA_CONFIG = {
       position: position,
       targetScene: targetScene || '',
       buttons: buttons,
+      panelName: panelName || 'Remote Control',
+      shape: shape || 'default',
+      mainIcon: mainIcon || 'fa-solid fa-traffic-light',
       active: false,
       container: container,
       visible: true,
@@ -503,41 +535,27 @@ const HA_CONFIG = {
   const populateIconGrid = (iconGridElement, remoteId) => {
     if (!iconGridElement) return;
 
-    iconGridElement.innerHTML = '';
-    ICONS.forEach(icon => {
-      const iconOption = document.createElement('div');
-      iconOption.className = 'media-remote-icon-option';
-      iconOption.dataset.icon = icon.class;
-
-      const iconEl = document.createElement('i');
-      iconEl.className = icon.class;
-
-      iconOption.appendChild(iconEl);
-      iconGridElement.appendChild(iconOption);
-
-      iconOption.addEventListener('click', (e) => {
-        e.stopPropagation();
-        document.querySelectorAll(`#${iconGridElement.id} .media-remote-icon-option`).forEach(opt => {
-          opt.classList.remove('selected');
-        });
-        iconOption.classList.add('selected');
-        selectedIcon = icon.class;
-        document.getElementById(`${remoteId}-buttonIcon`).value = icon.class;
+    const currentIconInput = document.getElementById(`${remoteId}-buttonIcon`);
+    const searchInput = document.getElementById(`${remoteId}-iconSearch`);
+    
+    // Initial render
+    window.FontAwesomeSearch.renderGrid(iconGridElement, '', currentIconInput ? currentIconInput.value : 'fas fa-plus', (selectedClass) => {
+      if (currentIconInput) {
+        currentIconInput.value = selectedClass;
         updatePreview(remoteId);
-      });
-
-      iconOption.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        document.querySelectorAll(`#${iconGridElement.id} .media-remote-icon-option`).forEach(opt => {
-          opt.classList.remove('selected');
-        });
-        iconOption.classList.add('selected');
-        selectedIcon = icon.class;
-        document.getElementById(`${remoteId}-buttonIcon`).value = icon.class;
-        updatePreview(remoteId);
-      });
+      }
     });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        window.FontAwesomeSearch.renderGrid(iconGridElement, e.target.value, currentIconInput ? currentIconInput.value : 'fas fa-plus', (selectedClass) => {
+          if (currentIconInput) {
+            currentIconInput.value = selectedClass;
+            updatePreview(remoteId);
+          }
+        });
+      });
+    }
   };
 
   // Render buttons
@@ -636,7 +654,7 @@ const HA_CONFIG = {
           btnElement.style.transform = 'scale(1)';
         }
       }
-    }, 15000);
+    }, 50000);
   };
 
   const cancelLongPress = (e) => {
@@ -887,6 +905,12 @@ const HA_CONFIG = {
       remoteData.buttons.push(buttonData);
     }
 
+    const newPanelName = document.getElementById(`${remoteId}-panelNameInput`).value.trim();
+    if (newPanelName) {
+      remoteData.panelName = newPanelName;
+      document.getElementById(`${remoteId}-modalTitle`).textContent = newPanelName;
+    }
+
     // Refresh display
     renderButtons(document.getElementById(`${remoteId}-buttonGrid`), 
                   document.getElementById(`${remoteId}-emptyState`), 
@@ -907,7 +931,7 @@ const HA_CONFIG = {
     document.getElementById(`${remoteId}-panelEdit`).classList.add('hidden');
     document.getElementById(`${remoteId}-deleteConfirmation`).classList.add('hidden');
     document.getElementById(`${remoteId}-panelGrid`).classList.remove('hidden');
-    document.getElementById(`${remoteId}-modalTitle`).textContent = 'Remote Control';
+    document.getElementById(`${remoteId}-modalTitle`).textContent = remoteData.panelName || 'Remote Control';
     document.getElementById(`${remoteId}-modalSubtitle`).textContent = 'Smart Controller';
   };
 
@@ -988,8 +1012,120 @@ const HA_CONFIG = {
                                commandContainer, remoteConfig, switchConfig, mediaPlayerConfig, buttonPreview,
                                modalTitle, modalSubtitle, remoteData) => {
 
+    const showMainEditPanel = () => {
+      document.getElementById(`${remoteId}-panelGrid`).classList.add('hidden');
+      document.getElementById(`${remoteId}-panelEdit`).classList.add('hidden');
+      if (deleteConfirmation) deleteConfirmation.classList.add('hidden');
+      const panelMainEdit = document.getElementById(`${remoteId}-panelMainEdit`);
+      if (panelMainEdit) panelMainEdit.classList.remove('hidden');
+      if (editBtn) editBtn.style.display = 'none';
+      modalTitle.textContent = 'Edit Main Icon';
+      modalSubtitle.textContent = 'Choose Remote Icon';
+    };
+
+    const exitMainEditMode = () => {
+      const panelMainEdit = document.getElementById(`${remoteId}-panelMainEdit`);
+      if (panelMainEdit) panelMainEdit.classList.add('hidden');
+      document.getElementById(`${remoteId}-panelGrid`).classList.remove('hidden');
+      if (editBtn) editBtn.style.display = 'flex';
+      modalTitle.textContent = remoteData.panelName || 'Remote Control';
+      modalSubtitle.textContent = 'Smart Controller';
+    };
+
     // Open modal
+    let mainLongPressTimer;
+    let isMainLongPressing = false;
+    
+    const handleMainTouchStart = (e) => {
+      isMainLongPressing = false;
+      mainButton.style.transform = 'scale(0.95)';
+      mainLongPressTimer = setTimeout(() => {
+        isMainLongPressing = true;
+        mainButton.style.transform = '';
+        
+        const mainIconGrid = document.getElementById(`${remoteId}-mainIconGrid`);
+        const currentMainIconInput = document.getElementById(`${remoteId}-mainIconButtonValue`);
+        window.FontAwesomeSearch.renderGrid(mainIconGrid, '', currentMainIconInput.value, (selectedClass) => {
+          currentMainIconInput.value = selectedClass;
+        });
+
+        const mainSearchInput = document.getElementById(`${remoteId}-mainIconSearch`);
+        mainSearchInput.oninput = (ev) => {
+          window.FontAwesomeSearch.renderGrid(mainIconGrid, ev.target.value, currentMainIconInput.value, (selectedClass) => {
+            currentMainIconInput.value = selectedClass;
+          });
+        };
+
+        showMainEditPanel();
+        modal.classList.add('show');
+        mainButton.classList.add('active-main');
+        mainButton.style.display = 'none';
+        document.body.classList.add('media-remote-modal-active');
+        disableBodyRotation();
+      }, 50000);
+    };
+
+    const handleMainTouchEnd = (e) => {
+      clearTimeout(mainLongPressTimer);
+      mainButton.style.transform = '';
+      if (isMainLongPressing) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    mainButton.addEventListener('mousedown', handleMainTouchStart);
+    mainButton.addEventListener('touchstart', handleMainTouchStart);
+    mainButton.addEventListener('mouseup', handleMainTouchEnd);
+    mainButton.addEventListener('mouseleave', handleMainTouchEnd);
+    mainButton.addEventListener('touchend', handleMainTouchEnd);
+    mainButton.addEventListener('touchcancel', handleMainTouchEnd);
+
+    // Cancel main Edit
+    document.getElementById(`${remoteId}-cancelMainEditBtn`).addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      exitMainEditMode();
+    });
+    
+    document.getElementById(`${remoteId}-cancelMainEditBtn`).addEventListener('touchend', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      exitMainEditMode();
+    });
+
+    // Save main Edit
+    document.getElementById(`${remoteId}-saveMainEditBtn`).addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      const newIcon = document.getElementById(`${remoteId}-mainIconButtonValue`).value;
+      remoteData.mainIcon = newIcon;
+      document.getElementById(`${remoteId}-mainIconEl`).className = newIcon;
+      exitMainEditMode();
+    });
+    
+    document.getElementById(`${remoteId}-saveMainEditBtn`).addEventListener('touchend', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      const newIcon = document.getElementById(`${remoteId}-mainIconButtonValue`).value;
+      remoteData.mainIcon = newIcon;
+      document.getElementById(`${remoteId}-mainIconEl`).className = newIcon;
+      exitMainEditMode();
+    });
+
     const openModal = () => {
+      if (isMainLongPressing) return;
+      if (window.shapeMode === 'round') {
+        remoteData.shape = 'round';
+        mainButton.style.borderRadius = '50%';
+        mainButton.style.aspectRatio = '1/1';
+        return;
+      } else if (window.shapeMode === 'default') {
+        remoteData.shape = 'default';
+        mainButton.style.borderRadius = '';
+        mainButton.style.aspectRatio = '';
+        return;
+      }
       modal.classList.add('show');
       mainButton.classList.add('active-main');
       mainButton.style.display = 'none';
@@ -1260,6 +1396,9 @@ const HA_CONFIG = {
           id: remoteData.id,
           position: remoteData.position.toArray ? remoteData.position.toArray() : remoteData.position,
           targetScene: remoteData.targetScene || '',
+          panelName: remoteData.panelName || 'Remote Control',
+          shape: remoteData.shape || 'default',
+          mainIcon: remoteData.mainIcon || 'fa-solid fa-traffic-light',
           buttons: remoteData.buttons.map(btn => ({
             icon: btn.icon,
             text: btn.text,
@@ -1323,7 +1462,7 @@ const HA_CONFIG = {
         }
 
         // Create remote with saved buttons
-        createRemoteModal(position, remoteData.targetScene || '', savedButtons);
+        createRemoteModal(position, remoteData.targetScene || '', savedButtons, remoteData.panelName, remoteData.shape, remoteData.mainIcon);
       });
     },
 
