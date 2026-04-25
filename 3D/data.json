@@ -6,3 +6,52 @@
       "hotspots": []
     }
   },
+  "remotes": [],
+  "mediaRemotes": [],
+  "lockRemotes": [],
+  "sensors": [],
+  "individualRemotes": [
+    {
+      "id": "indiv-remote-1",
+      "position": [
+        -227.51113094212664,
+        33.28170498913597,
+        -443.4545115339391
+      ],
+      "targetScene": "scene1777117670905",
+      "panelName": "Dimmer Light",
+      "shape": "default",
+      "switch": {
+        "name": "mohan",
+        "icon": "fa-solid fa-paw",
+        "entityId": "light.bedcenter",
+        "active": false,
+        "controlType": "dimmer"
+      }
+    },
+    {
+      "id": "indiv-remote-2",
+      "position": [
+        223.28657359218496,
+        110.82078094385741,
+        -432.92225644059687
+      ],
+      "targetScene": "scene1777117670905",
+      "panelName": "Individual Switch",
+      "shape": "default",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-1",
+        "entityId": "light.pantry_cct_lighr_exp_room_entrance_light",
+        "active": false,
+        "controlType": "toggle"
+      }
+    }
+  ],
+  "currentScene": "scene1777117670905",
+  "haConfig": {
+    "url": "wss://REMOTE URL/api/websocket",
+    "connected": false,
+    "socketState": 3
+  }
+}
