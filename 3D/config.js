@@ -3,20 +3,20 @@
 const HomeAssistantConfig = {
   // Remote connection (cloud)
   remote: {
-    url: "wss://REMOTE URL/api/websocket",
-    token: "REMOTE TOKEN"
+    url: "wss://vxagd3odvqbqyy0y21ux4roqfdwoqxfb.ui.nabu.casa/api/websocket",
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJiNmMwOTBiOTRhNzQ0ZTYxOTNlZDRiNjBhNjdhZTAwYSIsImlhdCI6MTc3NjMzMzU1MiwiZXhwIjoyMDkxNjkzNTUyfQ.jICTuaXkAdKTxzveWZMUuOaR33U_DsdGFy7LB_RG3F0"
   },
   
   // Local connection - UPDATE THESE VALUES WITH YOUR LOCAL HA DETAILS
   local: {
-    url: "ws://[IP_ADDRESS]/api/websocket",
-    token: "REMOTE TOKEN"
+    url: "ws://192.168.1.15:8123/api/websocket",
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJiNmMwOTBiOTRhNzQ0ZTYxOTNlZDRiNjBhNjdhZTAwYSIsImlhdCI6MTc3NjMzMzU1MiwiZXhwIjoyMDkxNjkzNTUyfQ.jICTuaXkAdKTxzveWZMUuOaR33U_DsdGFy7LB_RG3F0"
   },
   
   // Current active connection (will be set by mode selector)
   active: {
-    url: "wss://REMOTE URL/api/websocket",
-    token: "REMOTE TOKEN"
+    url: "wss://vxagd3odvqbqyy0y21ux4roqfdwoqxfb.ui.nabu.casa/api/websocket",
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJiNmMwOTBiOTRhNzQ0ZTYxOTNlZDRiNjBhNjdhZTAwYSIsImlhdCI6MTc3NjMzMzU1MiwiZXhwIjoyMDkxNjkzNTUyfQ.jICTuaXkAdKTxzveWZMUuOaR33U_DsdGFy7LB_RG3F0"
   },
   
   // Connection settings
