@@ -68,7 +68,7 @@
   ],
   "currentScene": "scene1777887918897",
   "haConfig": {
-    "url": "wss://REMOTE URL/api/websocket",
+    "url": "wss://vxagd3odvqbqyy0y21ux4roqfdwoqxfb.ui.nabu.casa/api/websocket",
     "connected": false,
     "socketState": 3
   }
