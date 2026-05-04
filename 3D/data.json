@@ -14,35 +14,53 @@
     {
       "id": "indiv-remote-1",
       "position": [
-        -227.51113094212664,
-        33.28170498913597,
-        -443.4545115339391
+        392.5359886759428,
+        300.0873108771586,
+        -75.57012981770211
       ],
-      "targetScene": "scene1777117670905",
-      "panelName": "Dimmer Light",
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
       "shape": "default",
       "switch": {
-        "name": "mohan",
-        "icon": "fa-solid fa-paw",
-        "entityId": "light.bedcenter",
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.bedtop",
         "active": false,
-        "controlType": "dimmer"
+        "controlType": "toggle"
       }
     },
     {
       "id": "indiv-remote-2",
       "position": [
-        223.28657359218496,
-        110.82078094385741,
-        -432.92225644059687
+        333.30919567456414,
+        250.37880103438084,
+        -275.71266537495893
       ],
-      "targetScene": "scene1777117670905",
+      "targetScene": "scene1777887918897",
       "panelName": "Individual Switch",
       "shape": "default",
       "switch": {
         "name": "Switch",
-        "icon": "fa-solid fa-1",
-        "entityId": "light.pantry_cct_lighr_exp_room_entrance_light",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.bedtop",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-3",
+      "position": [
+        271.8928403661574,
+        188.1540702473549,
+        -374.3056131217069
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "default",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.bedtop",
         "active": false,
         "controlType": "toggle"
       }
