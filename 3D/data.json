@@ -12,7 +12,7 @@
   "sensors": [],
   "individualRemotes": [
     {
-      "id": "indiv-remote-2",
+      "id": "indiv-remote-1",
       "position": [
         392.5359886759428,
         300.0873108771586,
@@ -30,7 +30,7 @@
       }
     },
     {
-      "id": "indiv-remote-3",
+      "id": "indiv-remote-2",
       "position": [
         333.30919567456414,
         250.37880103438084,
@@ -48,7 +48,7 @@
       }
     },
     {
-      "id": "indiv-remote-4",
+      "id": "indiv-remote-3",
       "position": [
         271.8928403661574,
         188.1540702473549,
@@ -61,6 +61,456 @@
         "name": "Switch",
         "icon": "fa-solid fa-lightbulb",
         "entityId": "light.bedtop",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-4",
+      "position": [
+        -428.4434182170372,
+        243.36848188978857,
+        -83.71458850819835
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.tv_cob_light",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-5",
+      "position": [
+        -350.31842127206863,
+        207.86827635235488,
+        -289.62104711689085
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.tv_cob_light",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-6",
+      "position": [
+        -259.80720965453384,
+        162.85827210300766,
+        -394.6245143778959
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.tv_cob_light",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-7",
+      "position": [
+        59.16323565583793,
+        129.4638863419934,
+        478.72787009713255
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.back_door_cob_light",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-8",
+      "position": [
+        -6.192104097788208,
+        133.86681793335381,
+        481.2863176531554
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "default",
+      "switch": {
+        "name": "Switch",
+        "icon": "fas fa-lightbulb",
+        "entityId": "",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-9",
+      "position": [
+        -18.616106992118386,
+        136.9831190495092,
+        479.8135681829187
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.back_door_cob_light",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-10",
+      "position": [
+        -83.50562908115766,
+        135.72659099772514,
+        473.36704136696767
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.back_door_cob_light",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-11",
+      "position": [
+        171.59108425231574,
+        164.97519896262688,
+        439.2173996835444
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.back_door_cob_lightli",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-12",
+      "position": [
+        -273.232206519174,
+        264.26484639243904,
+        324.3045308388117
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.fan_side_cob_light_1",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-13",
+      "position": [
+        -197.300040309034,
+        180.56904765586998,
+        421.6611675026239
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "default",
+      "switch": {
+        "name": "Switch",
+        "icon": "fas fa-lightbulb",
+        "entityId": "",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-14",
+      "position": [
+        -188.22867804628547,
+        197.12375959332525,
+        418.5285130772056
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.fan_side_cob_light_1",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-15",
+      "position": [
+        89.75192429425213,
+        201.50259941363765,
+        448.51834655564204
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.fan_side_cob_light_1",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-16",
+      "position": [
+        136.07737810571544,
+        297.2069078227386,
+        377.8145578919698
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.fan_side_cob_light_1",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-17",
+      "position": [
+        -4.08363781788232,
+        127.42938257668403,
+        483.171381811486
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.back_door_cob_light",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-18",
+      "position": [
+        109.31158242539559,
+        482.45268320036314,
+        -71.6475215337266
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.bedtop",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-19",
+      "position": [
+        -91.81051009618774,
+        467.74050571384294,
+        -150.27067396968408
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.bedtop",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-20",
+      "position": [
+        243.8181228575594,
+        401.2847041565299,
+        171.33252186791157
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.bedtop",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-21",
+      "position": [
+        -370.6390941998327,
+        317.7680321438279,
+        107.06992332758787
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.bedtop",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-22",
+      "position": [
+        -18.502964199155546,
+        209.82704112902806,
+        -452.8367985182984
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.bedtop",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-23",
+      "position": [
+        79.08647189400799,
+        209.1508192749485,
+        -446.72938920545533
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.bedtop",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-24",
+      "position": [
+        -93.63597261153261,
+        112.10031856075008,
+        -477.97148186557473
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.fan_side_cob_light_1",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-25",
+      "position": [
+        -150.4474732272025,
+        163.80042783866438,
+        -447.1943883805516
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.fan_side_cob_light_1",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-26",
+      "position": [
+        107.66197662624164,
+        122.14357231646635,
+        -472.24360691054045
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.fan_side_cob_light_1",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-27",
+      "position": [
+        145.10192387808695,
+        173.76209032755278,
+        -445.30365308961404
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-lightbulb",
+        "entityId": "light.fan_side_cob_light_1",
+        "active": false,
+        "controlType": "toggle"
+      }
+    },
+    {
+      "id": "indiv-remote-28",
+      "position": [
+        12.92984070234042,
+        171.20768041104282,
+        469.07111862479763
+      ],
+      "targetScene": "scene1777887918897",
+      "panelName": "Individual Switch",
+      "shape": "round",
+      "switch": {
+        "name": "Switch",
+        "icon": "fa-solid fa-moon",
+        "entityId": "light.fan_side_cob_light_1",
         "active": false,
         "controlType": "toggle"
       }
