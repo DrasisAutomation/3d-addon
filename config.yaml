@@ -5,8 +5,6 @@ description: Domotics 3D Control Panel
 
 arch:
   - amd64
-  - armv7
-  - armhf
   - aarch64
 
 startup: application
@@ -21,27 +19,15 @@ host_network: false
 init: false
 
 options:
-  remote_url: "wss://REMOTE URL/api/websocket"
-  remote_token: "REMOTE TOKEN"
-  local_url: "ws://[IP_ADDRESS]/api/websocket"
-  local_token: "LOCAL TOKEN"
+  remote_url: ""
+  remote_token: ""
+  local_url: ""
+  local_token: ""
 
 schema:
-  remote_url:
-    description: Remote Home Assistant websocket URL
-    type: str
-    default: "wss://REMOTE URL/api/websocket"
-  remote_token:
-    description: Remote Home Assistant access token
-    type: str
-    default: "REMOTE TOKEN"
-  local_url:
-    description: Local Home Assistant websocket URL
-    type: str
-    default: "ws://[IP_ADDRESS]/api/websocket"
-  local_token:
-    description: Local Home Assistant access token
-    type: str
-    default: "LOCAL TOKEN"
+  remote_url: url?
+  remote_token: password?
+  local_url: url?
+  local_token: password?
 
 ports: {}
