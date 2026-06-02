@@ -5,16 +5,21 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 1338;
 
-const OPTIONS_PATH = path.join(__dirname, "data", "options.json");
+// Home Assistant addon configuration path
+const OPTIONS_PATH = "/data/options.json";
 
 function getAddonOptions() {
   try {
     if (fs.existsSync(OPTIONS_PATH)) {
       const raw = fs.readFileSync(OPTIONS_PATH, "utf8");
-      return JSON.parse(raw);
+      const options = JSON.parse(raw);
+      console.log("Addon options loaded successfully:", options);
+      return options;
+    } else {
+      console.warn("Options file not found at", OPTIONS_PATH, "- using empty config");
     }
   } catch (err) {
-    console.warn("Unable to read addon options:", err);
+    console.error("Error reading addon options:", err.message);
   }
   return {};
 }

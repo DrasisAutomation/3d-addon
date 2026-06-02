@@ -25,17 +25,23 @@ const HomeAssistantConfig = {
 
   loadAddOnOptions: function() {
     const options = window.ADDON_OPTIONS || {};
-    if (options.remote_url) {
+    console.log("ADDON_OPTIONS available:", options);
+    
+    if (options.remote_url && options.remote_url.trim()) {
       this.remote.url = String(options.remote_url).trim();
+      console.log("Loaded remote_url:", this.remote.url);
     }
-    if (options.remote_token) {
+    if (options.remote_token && options.remote_token.trim()) {
       this.remote.token = String(options.remote_token).trim();
+      console.log("Loaded remote_token: [hidden]");
     }
-    if (options.local_url) {
+    if (options.local_url && options.local_url.trim()) {
       this.local.url = String(options.local_url).trim();
+      console.log("Loaded local_url:", this.local.url);
     }
-    if (options.local_token) {
+    if (options.local_token && options.local_token.trim()) {
       this.local.token = String(options.local_token).trim();
+      console.log("Loaded local_token: [hidden]");
     }
   },
   
