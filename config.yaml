@@ -1,6 +1,6 @@
 name: Domotics 3D
 slug: domotics_3d
-version: "1.1.1"
+version: "10.1.1"
 description: Domotics 3D Control Panel
 
 arch:
@@ -20,7 +20,28 @@ panel_title: Domotics 3D
 host_network: false
 init: false
 
-options: {}
-schema: {}
+options:
+  remote_url: "wss://REMOTE URL/api/websocket"
+  remote_token: "REMOTE TOKEN"
+  local_url: "ws://[IP_ADDRESS]/api/websocket"
+  local_token: "LOCAL TOKEN"
+
+schema:
+  remote_url:
+    description: Remote Home Assistant websocket URL
+    type: str
+    default: "wss://REMOTE URL/api/websocket"
+  remote_token:
+    description: Remote Home Assistant access token
+    type: str
+    default: "REMOTE TOKEN"
+  local_url:
+    description: Local Home Assistant websocket URL
+    type: str
+    default: "ws://[IP_ADDRESS]/api/websocket"
+  local_token:
+    description: Local Home Assistant access token
+    type: str
+    default: "LOCAL TOKEN"
 
 ports: {}

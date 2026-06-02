@@ -530,19 +530,39 @@
     </div>
 
     <script>
-        // Load config.js (unchanged logic)
-        const configScript = document.createElement('script');
-        configScript.src = 'config.js';
-        configScript.onload = () => {
-            console.log('Configuration loaded');
-            const connectBtn = document.getElementById('connectBtn');
-            if (window.CONFIG) connectBtn.disabled = false;
+        // Load addon options and config.js in sequence
+        const optionsScript = document.createElement('script');
+        optionsScript.src = 'ha-options.js';
+        optionsScript.onload = () => {
+            const configScript = document.createElement('script');
+            configScript.src = 'config.js';
+            configScript.onload = () => {
+                console.log('Configuration loaded');
+                const connectBtn = document.getElementById('connectBtn');
+                if (window.CONFIG) connectBtn.disabled = false;
+            };
+            configScript.onerror = () => {
+                console.error('Failed to load config.js');
+                alert('Configuration file missing. Please ensure config.js exists.');
+            };
+            document.head.appendChild(configScript);
         };
-        configScript.onerror = () => {
-            console.error('Failed to load config.js');
-            alert('Configuration file missing. Please ensure config.js exists.');
+        optionsScript.onerror = () => {
+            console.warn('Failed to load addon options script');
+            const configScript = document.createElement('script');
+            configScript.src = 'config.js';
+            configScript.onload = () => {
+                console.log('Configuration loaded');
+                const connectBtn = document.getElementById('connectBtn');
+                if (window.CONFIG) connectBtn.disabled = false;
+            };
+            configScript.onerror = () => {
+                console.error('Failed to load config.js');
+                alert('Configuration file missing. Please ensure config.js exists.');
+            };
+            document.head.appendChild(configScript);
         };
-        document.head.appendChild(configScript);
+        document.head.appendChild(optionsScript);
 
         let selectedMode = null;
 

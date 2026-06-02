@@ -1,8 +1,23 @@
 const express = require("express");
+const fs = require("fs");
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 1338;
+
+const OPTIONS_PATH = path.join(__dirname, "data", "options.json");
+
+function getAddonOptions() {
+  try {
+    if (fs.existsSync(OPTIONS_PATH)) {
+      const raw = fs.readFileSync(OPTIONS_PATH, "utf8");
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.warn("Unable to read addon options:", err);
+  }
+  return {};
+}
 
 // Allow Home Assistant iframe
 app.use((req, res, next) => {
@@ -21,6 +36,12 @@ app.get("/api/status", (req, res) => {
     status: "running",
     time: new Date().toISOString()
   });
+});
+
+app.get("/ha-options.js", (req, res) => {
+  const options = getAddonOptions();
+  res.type("application/javascript");
+  res.send(`window.ADDON_OPTIONS = ${JSON.stringify(options || {})};`);
 });
 
 app.get("*", (req, res) => {

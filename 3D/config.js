@@ -22,6 +22,22 @@ const HomeAssistantConfig = {
   // Connection settings
   maxReconnectAttempts: 10,
   reconnectInterval: 3000,
+
+  loadAddOnOptions: function() {
+    const options = window.ADDON_OPTIONS || {};
+    if (options.remote_url) {
+      this.remote.url = String(options.remote_url).trim();
+    }
+    if (options.remote_token) {
+      this.remote.token = String(options.remote_token).trim();
+    }
+    if (options.local_url) {
+      this.local.url = String(options.local_url).trim();
+    }
+    if (options.local_token) {
+      this.local.token = String(options.local_token).trim();
+    }
+  },
   
   // Helper method to get current WebSocket URL with proper protocol
   getWebSocketUrl: function() {
@@ -52,6 +68,7 @@ const HomeAssistantConfig = {
   
   // Initialize with saved mode
   init: function() {
+    this.loadAddOnOptions();
     const lastMode = localStorage.getItem('lastConnectionMode');
     if (lastMode === 'local' && this.local.url && this.local.token) {
       this.switchToLocal();
